@@ -1,0 +1,19 @@
+name: Server build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main-thread-network']
+
+jobs:
+  server:
+    name: Server component (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86, x64]
+    uses: ./.github/workflows/build-server-reusable.yml
+    with:
+      target: ServerOmp
+      arch: ${{ matrix.arch }}
+      build-type: Release
