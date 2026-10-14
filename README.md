@@ -15,6 +15,7 @@ Client/server CEF plugin for **open.mp** and **SA-MP**.
 
 - Off-screen CEF rendering inside GTA SA
 - Overlay2D browser rendering for HUDs and menus
+- Browser layers to control which 2D interfaces appear on top
 - World2D browser rendering at world positions
 - WorldObject3D browser rendering through object texture replacement
 - Packaged server resources served through `http://cef/...`
@@ -84,6 +85,34 @@ Short version:
 - Browser lifecycle
 - Hidden browser navigation
 - Stress testing
+
+## Browser layers
+
+Use `CEF_SetBrowserLayer` to order Overlay2D and World2D browsers. Higher layers
+are drawn on top. Browsers start at layer `0`; negative layers are supported.
+When layers match, the higher browser ID is drawn on top.
+
+```pawn
+CEF_CreateBrowser(playerid, 10, "http://cef/inventory/index.html", true);
+CEF_SetBrowserLayer(playerid, 10, 100);
+
+CEF_CreateBrowser(playerid, 20, "http://cef/notifications/index.html", false);
+CEF_SetBrowserLayer(playerid, 20, 200);
+```
+
+The notification page should have a transparent background so the inventory
+remains visible. Layer changes do not change focus or visibility: in this
+example, the inventory keeps receiving mouse and keyboard input. Use
+`CEF_FocusBrowser` separately when an upper interface needs input.
+
+Layers can change at runtime and persist across hide/show, reload and navigation.
+Destroying and recreating a browser resets its layer to `0`. Setting the layer
+immediately after creation also works while resources are downloading.
+WorldObject3D browsers follow the game's object rendering and do not support layers.
+
+Update both client and server to a build with this feature and use the matching
+`cef.inc`. C++ open.mp components can call `ICefComponent::setBrowserLayer` with
+the updated component. Try `/ceflayers` in the demo to see two overlapping pages.
 - In-game camera preview (`/camera` in the demo gamemode)
 
 ## Game screen capture
