@@ -12,6 +12,8 @@ class CefOmpComponent final : public ICefOmpComponent,
                               public PawnEventHandler,
                               public PlayerConnectEventHandler,
                               public CoreEventHandler
+                              public CoreEventHandler,
+                              public PlayerConnectEventHandler
 {
 public:
     StringView componentName() const override;
@@ -31,6 +33,7 @@ public:
 
     void onAmxLoad(IPawnScript& script) override;
     void onAmxUnload(IPawnScript& script) override;
+	void onTick(Microseconds elapsed, TimePoint now) override;
 
     void onPlayerConnect(IPlayer& player) override;
     void onPlayerClientInit(IPlayer& player) override;
@@ -42,8 +45,8 @@ private:
     static constexpr uint16_t cef_network_port_offset = 2;
 
 private:
-    ICore* core_ = nullptr;
-    IPawnComponent* pawn_;
+	ICore* core_ = nullptr;
+	IPawnComponent* pawn_ = nullptr;
 
     std::unique_ptr<CefPlugin> plugin_;
 

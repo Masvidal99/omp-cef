@@ -30,6 +30,7 @@ tests/
           world3d.html
           events.html
           input.html
+          camera.html
           red.html
           blue.html
           empty.html
@@ -51,6 +52,7 @@ tests/
           world3d.html
           events.html
           input.html
+          camera.html
           red.html
           blue.html
           empty.html
@@ -219,6 +221,51 @@ This keeps the sample logic consistent across both platforms.
 /inputdestroy
 ```
 
+### Browser layers
+
+Use the updated client, server plugin and `src/server/cef.inc` when compiling
+the demo. Both test platforms include the inventory and notification resources.
+
+```txt
+/ceflayers
+/ceflayersback
+/ceflayersfront
+/ceflayerstie
+/ceflayersfocus
+/ceflayersdestroy
+```
+
+1. `/ceflayers` creates the inventory (ID 9110, layer 100) and a separate
+   transparent notification browser (ID 9109, layer 200). The notification must
+   appear above the inventory despite having a lower ID.
+2. `/ceflayersback` moves the notification to layer -100, hiding it behind the
+   opaque inventory. `/ceflayersfront` brings it back without reloading either page.
+3. `/ceflayerstie` puts both on layer 100. The inventory must be on top because
+   its ID is higher. Run `/ceflayersfront` again before the next step.
+4. `/ceflayersfocus` focuses the inventory. Type in its search field and click
+   **Use item**: it must remain interactive while the notification stays on top.
+   Click **Release focus** (or press Escape) to return to chat commands.
+5. `/ceflayersdestroy` removes both browsers. Run `/ceflayers` again to verify
+   destruction and recreation. Destroy the pair before repeating `/ceflayers`.
+
+Additional regression checks using `CEF_SetBrowserLayer`:
+
+- Change the layer while hidden, then show the browser; the new layer must apply.
+- Reload or navigate a browser; its layer must persist.
+- Destroy and recreate an ID without assigning a layer; it must return to 0.
+- Send create followed by multiple layer changes while resources download;
+  the last layer must apply when the browser appears. Destroying a queued browser
+  must also discard its pending layer.
+- Use signed 32-bit minimum and maximum layers to check ordering at both extremes.
+- Invalid IDs and WorldObject3D browsers must be ignored without affecting other browsers.
+
+### Game screen capture
+
+```txt
+/camera
+/cameradestroy
+```
+
 ### Stress test
 
 ```txt
@@ -284,6 +331,11 @@ JavaScript -> CEF browser -> Pawn
 ### Input / focus
 
 Demonstrates browser focus and keyboard input handling.
+
+### Game screen capture
+
+Demonstrates a phone-like CEF interface showing the live GTA frame through
+`cef.screen.start()` without capturing the CEF overlay itself.
 
 ### Stress test
 
