@@ -30,6 +30,7 @@ tests/
           world3d.html
           events.html
           input.html
+          camera.html
           red.html
           blue.html
           empty.html
@@ -51,6 +52,7 @@ tests/
           world3d.html
           events.html
           input.html
+          camera.html
           red.html
           blue.html
           empty.html
@@ -257,6 +259,13 @@ Additional regression checks using `CEF_SetBrowserLayer`:
 - Use signed 32-bit minimum and maximum layers to check ordering at both extremes.
 - Invalid IDs and WorldObject3D browsers must be ignored without affecting other browsers.
 
+### Game screen capture
+
+```txt
+/camera
+/cameradestroy
+```
+
 ### Stress test
 
 ```txt
@@ -322,6 +331,11 @@ JavaScript -> CEF browser -> Pawn
 ### Input / focus
 
 Demonstrates browser focus and keyboard input handling.
+
+### Game screen capture
+
+Demonstrates a phone-like CEF interface showing the live GTA frame through
+`cef.screen.start()` without capturing the CEF overlay itself.
 
 ### Stress test
 
